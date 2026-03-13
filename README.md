@@ -5,7 +5,7 @@
 
 Ejercico 1, semana 1:
 
-js´´´
+´´´
 <!DOCTYPE html>
 <!-- Indica al navegador que este documento usa HTML5 -->
 
