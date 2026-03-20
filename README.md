@@ -3,6 +3,8 @@
 #### Exploración creativa de arte, tecnología y medios digitales interactivos.
 #### Cultura web y arte digital.
 
+Pagina del curso: https://mauricixx.github.io/multimedial/
+
 Ejercico 1, semana 1:
 https://javi-ii1.github.io/Multimedial/w/index.html
 ```
