@@ -5,42 +5,67 @@
 <title>Multimedial</title>
 
 <style>
-body{
-margin:0;
-overflow:hidden;
-background:#7d9768;
-font-family:cochin, italic;
-color:white;
-text-align:center;
+          /* Estilo general del cuerpo */
+        body {
+            background-color: #7d9768;
+            margin: 0;
+            color: white;
+            font-family: cochin, italic;
+            text-align: center;
+            padding-top: 50px;
+        }
+.header{
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+
+padding: 20px 0;
+
+background: rgba(201, 221, 185, 0.50); /* mismo verde pero translúcido */
+backdrop-filter: blur(6px);
+
+z-index: 10; /* encima del canvas */
 }
 
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-1;
+.header h1{
+margin: 0;
+font-size: 60px;
 }
 
-h1{
-margin-top:40px;
-font-size:80px;
+.header nav{
+margin-top: 10px;
 }
 
-a{
-margin:0 20px;
-font-size:22px;
-color:white;
-text-decoration:none;
+.header a{
+margin: 0 15px;
+font-size: 20px;
+color: white;
+text-decoration: none;
+}
+
+.header a:hover{
+opacity: 0.7;
 }
 </style>
 </head>
 
-<body>
 
-<h1>Multimedial</h1>
-<a href="Obra.html">Mis obras</a>
-<a>|</a>
-<a href="Contacto.html">Contacto</a>
+<body>
+  
+<div class="header">
+  <h1>Javiera León</h1>
+  <nav>
+    <a href="Obra.html">Mis obras</a>
+    <a>|</a>
+    <a href="Contacto.html">Contacto</a>
+  </nav>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
