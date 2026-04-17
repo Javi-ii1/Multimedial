@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<Contacto class="html"></Contacto>
+<html>
 
+</head>
+<head>
+<title>Contacto</title>
+
+<style>
+    body{
+        background-color: #849e65;
+        color: rgb(71, 96, 52);
+        margin: 0;
+        font-family: cochin, italic;
+        font-size: 80px;
+        text-align: center;
+        padding-top: 50px;  
+    }
+
+    h1 { 
+        font-size: 70px;
+    }
+
+    a { 
+        color: white;
+        font-size: 24px;
+        margin: 0 40px;
+    }
+
+    p{
+        font-size: 30px;
+        color: white;
+    }
+    img {
+        width: 40%;
+        height: auto;
+        display: block;
+        margin: 30px auto;
+    }
+
+    .menu {
+  text-align: center;   /* centra todo el bloque */
+  margin-top: 20px;     /* espacio respecto al párrafo */
+}
+
+.menu a {
+  color: white;
+  font-size: 24px;
+  margin: 0 20px;       /* espacio entre enlaces */
+  text-decoration: none; /* opcional, quita subrayado */
+}
+
+.menu span {
+  color: white;
+  font-size: 24px;
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+<h1>Contacto</h1>
+
+<img src="img/bosque.jpg">
+
+<p>Jleonc1406@gmail.com</p>
+
+<div class="=menu">
+    <a href="index.html">Inicio</a> 
+    <a>|</a>
+    <a href="obra.html">Mis obras</a>
+</div>
+
+
+</body>
+</html>
