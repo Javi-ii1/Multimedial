@@ -1,68 +1,198 @@
 <!DOCTYPE html>
-<!-- Indica al navegador que este documento usa HTML5 -->
-
-<html>
-<!-- Inicio del documento HTML -->
-
+<html lang="es">
 <head>
-<!-- Sección donde van metadatos, título y estilos -->
-
 <meta charset="UTF-8">
-<!-- Define la codificación de caracteres para que se vean bien tildes y símbolos -->
-
 <title>Multimedial</title>
-<!-- Título de la página que aparece en la pestaña del navegador -->
 
 <style>
-/* Aquí comienza la sección de estilos CSS que define la apariencia visual */
-
 body{
-/* "body" se refiere a todo el contenido visible de la página */
-
-  background-color: #5F9136;
-  /* Define que el fondo de toda la página sea blanco */
-
-  color: white;
-  /* Define que el color del texto sea negro */
-
-  margin: 0;
-  /* Elimina los márgenes que los navegadores agregan por defecto */
-
-  height: 100vh;
-  /* Hace que el alto del cuerpo sea igual al 100% de la altura de la pantalla */
-
-  display: flex;
-  /* Activa el sistema Flexbox para organizar y centrar elementos */
-
-  justify-content: center;
-  /* Centra el contenido horizontalmente */
-
-  align-items: center;
-  /* Centra el contenido verticalmente */
-
-  font-family: Arial, sans-serif;
-  /* Define la tipografía del texto */
-
-  font-size: 60px;
-  /* Define el tamaño grande del texto */
-
+margin:0;
+overflow:hidden;
+background:#7d9768;
+font-family:cochin, italic;
+color:white;
+text-align:center;
 }
-/* Fin de las reglas de estilo del body */
 
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+h1{
+margin-top:40px;
+font-size:80px;
+}
+
+a{
+margin:0 20px;
+font-size:22px;
+color:white;
+text-decoration:none;
+}
 </style>
-<!-- Fin de la sección de estilos -->
-
 </head>
-<!-- Fin de la sección head -->
 
 <body>
-<!-- Inicio del contenido visible de la página -->
 
-Multimedial
-<!-- Texto que aparece en el centro de la pantalla -->
+<h1>Multimedial</h1>
+<a href="Obra.html">Mis obras</a>
+<a>|</a>
+<a href="Contacto.html">Contacto</a>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+// ----------- ESCENA -----------
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor("#7d9768", 1); // fondo correcto
+document.body.appendChild(renderer.domElement);
+
+// ----------- SHADER -----------
+
+const material = new THREE.ShaderMaterial({
+
+uniforms: {
+  time: { value: 0 },
+  resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+},
+
+transparent: true,
+
+fragmentShader: `
+
+precision highp float;
+
+uniform float time;
+uniform vec2 resolution;
+
+// metaball
+float metaball(vec2 p, vec2 c, float r){
+    float d = length(p - c);
+    return r*r / (d*d);
+}
+
+// ruido
+float noise(vec2 p){
+    return sin(p.x*3.0)*sin(p.y*3.0);
+}
+
+// deformación orgánica (raíces)
+vec2 rootWarp(vec2 uv){
+    float n = noise(uv*2.0 + time*0.15);
+    float a = n * 3.14;
+    return uv + vec2(cos(a), sin(a)) * 0.07;
+}
+
+void main(){
+
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    uv = uv * 2.0 - 1.0;
+
+    uv = rootWarp(uv);
+
+    float field = 0.0;
+
+    // masa principal
+    for(int i=0;i<6;i++){
+        float fi = float(i);
+        vec2 pos = vec2(
+            sin(time*0.15 + fi)*0.5,
+            cos(time*0.2 + fi*1.3)*0.5
+        );
+        field += metaball(uv, pos, 0.3);
+    }
+
+    // raíces
+    for(int i=0;i<8;i++){
+        float fi = float(i);
+        vec2 pos = vec2(
+            sin(fi*0.8 + time*0.1)*0.8,
+            cos(fi*1.1 + time*0.1)*0.8
+        );
+        field += metaball(uv, pos, 0.13);
+    }
+
+    // agujeros
+    float holes = 0.0;
+    for(int i=0;i<4;i++){
+        float fi = float(i);
+        vec2 pos = vec2(
+            cos(time*0.2 + fi)*0.4,
+            sin(time*0.25 + fi)*0.4
+        );
+        holes += metaball(uv, pos, 0.2);
+    }
+
+    float value = field - holes * 1.1;
+
+    // 🔥 FORMA MUCHO MÁS ESTABLE
+    float shape = smoothstep(0.4, 0.9, value);
+
+    // ----------- COLOR (AMBAR + VERDE) -----------
+
+    vec3 verde = vec3(0.22,0.58,0.3);
+    vec3 ambar = vec3(1.0,0.65,0.25);
+    vec3 ocre  = vec3(0.55,0.45,0.2);
+    vec3 rojo  = vec3(0.5,0.1,0.1);
+
+    float f = value * 0.8;
+
+    // base equilibrada (no desaparece)
+    vec3 color = mix(verde, ambar, 0.45);
+
+    // estructura
+    color = mix(color, ocre, smoothstep(0.6,1.2,f));
+
+    // verde dominante
+    color = mix(color, verde, smoothstep(0.8,1.6,f));
+
+    // ámbar fuerte pero controlado
+    color = mix(color, ambar, smoothstep(1.0,1.8,f)*0.6);
+
+    // rojo mínimo
+    color = mix(color, rojo, smoothstep(1.6,2.2,f)*0.2);
+
+    // textura
+    color *= 0.92 + noise(uv*3.0)*0.08;
+
+    // 🔥 ALPHA SEGURO (no desaparece)
+    float alpha = shape;
+
+    gl_FragColor = vec4(color, alpha);
+}
+`
+});
+
+// plano
+const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), material);
+scene.add(mesh);
+
+// resize
+window.addEventListener("resize", ()=>{
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+});
+
+// animación
+function animate(){
+  material.uniforms.time.value += 0.01;
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+</script>
 
 </body>
-<!-- Fin del contenido visible -->
-
 </html>
-<!-- Fin del documento HTML -->
