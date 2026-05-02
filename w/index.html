@@ -5,52 +5,121 @@
 <title>Multimedial</title>
 
 <style>
-          /* Estilo general del cuerpo */
-        body {
-            background-color: #7d9768;
-            margin: 0;
-            color: white;
-            font-family: cochin, italic;
-            text-align: center;
-            padding-top: 50px;
-        }
-.header{
-position: fixed;
-top: 0;
+        /* Estilo general del cuerpo */
+    body {
+        background-color: #7d9768;
+        margin: 0;
+        color: white;
+        font-family: cochin, italic;
+        text-align: center;
+        padding-top: 50px;
+    }
+    .header{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 20px 0;
+
+        background: rgba(201, 221, 185, 0.50); /* mismo verde pero translúcido */
+        backdrop-filter: blur(6px);
+
+        z-index: 10; /* encima del canvas */
+    }
+
+    .header h1{
+        margin: 0;
+        font-size: 60px;
+    }
+
+    .header nav{
+        margin-top: 10px;
+    }
+
+    .header a{
+        margin: 0 15px;
+        font-size: 20px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .header a:hover{
+        opacity: 0.7;
+    }
+    /* contenedor */
+.dropdown{
+position: relative;
+display: inline-block;
+}
+
+/* botón */
+.dropbtn{
+cursor: pointer;
+}
+
+/* menú oculto */
+.dropdown-content{
+display: none;
+position: absolute;
+top: 30px;
 left: 0;
-width: 100%;
 
-display: flex;
-flex-direction: column;
-align-items: center;
-
-padding: 20px 0;
-
-background: rgba(201, 221, 185, 0.50); /* mismo verde pero translúcido */
+background: rgba(201,221,185,0.9);
 backdrop-filter: blur(6px);
 
-z-index: 10; /* encima del canvas */
+min-width: 160px;
+border-radius: 8px;
+padding: 10px 0;
+
+z-index: 20;
 }
 
-.header h1{
+/* links del menú */
+.dropdown-content a{
+display: block;
+padding: 10px;
 margin: 0;
-font-size: 60px;
-}
-
-.header nav{
-margin-top: 10px;
-}
-
-.header a{
-margin: 0 15px;
-font-size: 20px;
 color: white;
-text-decoration: none;
+font-size: 18px;
 }
 
-.header a:hover{
-opacity: 0.7;
+/* hover */
+.dropdown-content a:hover{
+background: rgba(255,255,255,0.2);
 }
+
+.dropdown-content{
+display: none;
+}
+
+.dropdown-content.active{
+display: block;
+}
+
+.contacto{
+position: fixed;
+bottom: 20px;
+left: 20px;
+
+text-align: left;
+z-index: 20;
+
+color: rgba(255, 255, 255, 0.795);
+font-family: cochin, italic;
+}
+
+.contacto p{
+margin: 0;
+font-size: 16px;
+color: rgba(255, 255, 255, 0.742);
+}
+
+
 </style>
 </head>
 
@@ -60,11 +129,17 @@ opacity: 0.7;
 <div class="header">
   <h1>Javiera León</h1>
   <nav>
-    <a href="Obra.html">Mis obras</a>
-    <a>|</a>
-    <a href="Contacto.html">Contacto</a>
+    <div class="dropdown">
+  <a href="#" id="menuBtn">Mis obras</a>
+
+  <div class="dropdown-content" id="menu">
+    <a href="Obra 1.html">Obra 1</a>
+    <a href="Obra 2.html">Obra 2</a>
+  </div>
+</div>
   </nav>
 </div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
@@ -218,6 +293,31 @@ function animate(){
 animate();
 
 </script>
+
+<script>
+const btn = document.getElementById("menuBtn");
+const menu = document.getElementById("menu");
+
+btn.addEventListener("click", function(e){
+    e.preventDefault();
+    menu.classList.toggle("active");
+});
+
+document.addEventListener("click", function(e){
+    if (!btn.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("active");
+    }
+});
+</script>
+
+<div class="contacto">
+    
+
+    
+    <p>✉  Jleonc1406@gmail.com</p>
+    <p>+569 6917 0280</p>
+
+</div>
 
 </body>
 </html>
