@@ -19,6 +19,9 @@ background:#7d9768;
 font-family: cochin, italic;
 color:white;
 text-align:center;
+
+position: relative;
+overflow-x: hidden;
 }
 
 /* 🔥 HEADER */
@@ -60,19 +63,33 @@ text-decoration: none;
 opacity: 0.7;
 }
 
+/* 🔥 HEADER SOBRE TODO */
+.header{
+z-index: 1000;
+}
+
+/* MAIN */
+main{
+position: relative;
+z-index: 2;
+}
+
 /* 🔥 ESPACIO REAL PARA EL HEADER */
 main{
 padding-top: 140px;
 }
 
-/* CANVAS FONDO */
+/* 🔥 CANVAS FONDO */
 canvas{
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-z-index:-1;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+
+z-index: -1;
+
+pointer-events: none;
 }
 
 /* CONTENEDOR */
@@ -97,18 +114,11 @@ backdrop-filter: blur(6px);
 width:80%;
 margin:30px 0;
 }
-.header a:hover{
-    opacity: 0.7;
-}
+
 /* contenedor */
 .dropdown{
 position: relative;
 display: inline-block;
-}
-
-/* botón */
-.dropbtn{
-cursor: pointer;
 }
 
 /* menú oculto */
@@ -142,10 +152,6 @@ font-size: 18px;
 background: rgba(255,255,255,0.2);
 }
 
-.dropdown-content{
-display: none;
-}
-
 .dropdown-content.active{
 display: block;
 }
@@ -163,18 +169,16 @@ margin: 30px 0;
 display: flex;
 transition: transform 0.4s ease;
 width: 100%;
-z-index: 1;
 }
 
 /* imágenes */
 .track img{
-min-width: 100%; /* 🔥 clave */
+min-width: 100%;
 height: 600px;
 object-fit: cover;
 object-position: center;
 border-radius: 10px;
 }
-
 
 /* botones */
 .btn{
@@ -189,14 +193,14 @@ padding: 10px;
 cursor: pointer;
 opacity: 0;
 transition: opacity 0.3s;
-z-index: 5; /* 🔥 clave */
+z-index: 5;
 }
 
 /* posiciones */
 .prev{ left: 10px; }
 .next{ right: 10px; }
 
-/* 👇 aparecen solo en hover */
+/* aparecen solo en hover */
 .carrusel:hover .btn{
 opacity: 1;
 }
@@ -209,17 +213,19 @@ opacity: 1;
 <!-- HEADER -->
 <header class="header">
     <h1>Mis obras</h1>
+
     <nav>
         <a href="index.html">Inicio</a>
-        <a>|</a>        
+        <a>|</a>
+
         <div class="dropdown">
             <a href="#" id="menuBtn">Mis obras</a>
 
-        <div class="dropdown-content" id="menu">
-            <a href="Obra 1.html">Obra 1</a>
-            <a href="Obra 2.html">Obra 2</a>
+            <div class="dropdown-content" id="menu">
+                <a href="Obra 1.html">Obra 1</a>
+                <a href="Obra 2.html">Obra 2</a>
+            </div>
         </div>
-    
     </nav>
 </header>
 
@@ -228,8 +234,10 @@ opacity: 1;
     <div class="contenedor">
 
         <div class="bloque">
+
             <div class="carrusel">
-            <button class="btn prev">&#10094;</button>
+
+                <button class="btn prev">&#10094;</button>
 
                 <div class="track">
                     <img src="img/micorriza 1.jpeg">
@@ -237,40 +245,43 @@ opacity: 1;
                     <img src="img/micorriza 3.jpeg">
                 </div>
 
-            <button class="btn next">&#10095;</button>
+                <button class="btn next">&#10095;</button>
+
             </div>
 
             <h2>Micorrizas</h2>
-            <p>Gofrados y  xilogragias de racices y micelio en papel reciclado y cocidos a una malla de alambre con volumenes de racices de arboles</p>
-        </div>
 
+            <p>
+            Gofrados y xilografías de raíces y micelio en papel reciclado
+            y cocidos a una malla de alambre con volúmenes de raíces de árboles.
+            </p>
+
+        </div>
 
     </div>
 </main>
 
-
-
+<!-- THREE JS -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 
 // ESCENA
 const scene = new THREE.Scene();
+
 const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
 
-const renderer = new THREE.WebGLRenderer({ 
+// RENDERER
+const renderer = new THREE.WebGLRenderer({
     antialias: true,
-    alpha: true /* 🔥 clave */
+    alpha: true
 });
 
-window.addEventListener("resize", () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    material.uniforms.resolution.value.set(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
-renderer.setClearColor(0x000000, 0);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+renderer.setClearColor(0x7d9768, 1);
+
 // canvas al fondo
 document.body.prepend(renderer.domElement);
 
@@ -287,130 +298,179 @@ transparent:true,
 fragmentShader:`
 
 precision highp float;
+
 uniform float time;
 uniform vec2 resolution;
 
 float metaball(vec2 p, vec2 c, float r){
-float d = length(p-c);
-return r*r/(d*d);
+    float d = length(p-c);
+    return r*r/(d*d);
 }
 
 float noise(vec2 p){
-return sin(p.x*3.0)*sin(p.y*3.0);
+    return sin(p.x*3.0)*sin(p.y*3.0);
 }
 
 vec2 warp(vec2 uv){
-float n = noise(uv*2.0 + time*0.15);
-float a = n*3.14;
-return uv + vec2(cos(a),sin(a))*0.07;
+    float n = noise(uv*2.0 + time*0.15);
+    float a = n*3.14;
+    return uv + vec2(cos(a),sin(a))*0.07;
 }
 
 void main(){
 
-vec2 uv = gl_FragCoord.xy / resolution.xy;
-uv = uv*2.0-1.0;
-uv = warp(uv);
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
 
-float field=0.0;
+    uv = uv*1.3-0.65;
+    uv = warp(uv);
 
-for(int i=0;i<6;i++){
-float fi=float(i);
-vec2 pos=vec2(
-sin(time*0.15+fi)*0.5,
-cos(time*0.2+fi*1.3)*0.5
-);
-field+=metaball(uv,pos,0.3);
+    float field=0.0;
+
+    for(int i=0;i<6;i++){
+
+    float fi=float(i);
+
+    vec2 pos=vec2(
+        sin(time*0.15+fi)*0.5,
+        cos(time*0.2+fi*1.3)*0.5
+    );
+
+    field+=metaball(uv,pos,0.5);
 }
 
 float holes=0.0;
 
 for(int i=0;i<6;i++){
-float fi=float(i);
-vec2 pos=vec2(
-cos(time*0.2+fi)*0.4,
-sin(time*0.25+fi)*0.4
-);
-holes+=metaball(uv,pos,0.25);
+
+    float fi=float(i);
+
+    vec2 pos=vec2(
+        cos(time*0.2+fi)*0.4,
+        sin(time*0.25+fi)*0.4
+    );
+
+    holes+=metaball(uv,pos,0.35);
 }
 
-float value=field-holes*1.2;
-float shape=smoothstep(0.4,0.9,value);
+    float value=field-holes*1.2;
 
-vec3 verde=vec3(0.22,0.58,0.3);
-vec3 ambar=vec3(1.0,0.65,0.25);
+    float shape=smoothstep(0.4,0.9,value);
 
-vec3 color=mix(verde,ambar,0.5);
+    vec3 verde=vec3(0.22,0.58,0.3);
+    vec3 ambar=vec3(1.0,0.65,0.25);
 
-float alpha=shape;
+    vec3 color=mix(verde,ambar,0.5);
 
-gl_FragColor=vec4(color,alpha);
+    float alpha=shape;
+
+    gl_FragColor=vec4(color,alpha);
 }
 `
 });
 
-const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2,2), material);
+// plano
+const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(2,2),
+    material
+);
+
 scene.add(mesh);
 
-// ANIMACIÓN
-function animate(){
-material.uniforms.time.value+=0.01;
-renderer.render(scene,camera);
-requestAnimationFrame(animate);
-}
-animate();
-
+// resize
 window.addEventListener("resize", () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
     material.uniforms.resolution.value.set(
         window.innerWidth,
         window.innerHeight
     );
 });
 
+// animación
+function animate(){
+
+    material.uniforms.time.value += 0.01;
+
+    renderer.render(scene,camera);
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
 </script>
 
+<!-- MENU -->
 <script>
+
 const btn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 
 btn.addEventListener("click", function(e){
+
     e.preventDefault();
+
     menu.classList.toggle("active");
 });
 
 document.addEventListener("click", function(e){
+
     if (!btn.contains(e.target) && !menu.contains(e.target)) {
+
         menu.classList.remove("active");
     }
 });
+
 </script>
 
+<!-- CARRUSEL -->
 <script>
+
 const track = document.querySelector(".track");
 const next = document.querySelector(".next");
 const prev = document.querySelector(".prev");
 
 let index = 0;
+
 const total = track.children.length;
 
 next.addEventListener("click", () => {
+
     index++;
-    if(index >= total) index = 0;
+
+    if(index >= total){
+        index = 0;
+    }
+
     update();
 });
 
 prev.addEventListener("click", () => {
+
     index--;
-    if(index < 0) index = total - 1;
+
+    if(index < 0){
+        index = total - 1;
+    }
+
     update();
 });
 
 function update(){
-    const width = document.querySelector(".carrusel").offsetWidth;
-    track.style.transform = `translateX(-${index * width}px)`;
+
+    const width =
+    document.querySelector(".carrusel").offsetWidth;
+
+    track.style.transform =
+    `translateX(-${index * width}px)`;
 }
 
 window.addEventListener("resize", update);
+
 </script>
 
 </body>
